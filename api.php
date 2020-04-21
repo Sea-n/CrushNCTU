@@ -165,8 +165,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				$db->updateSubmissionStatus($uid, -12);
 				err('目前尚未開放境外 IP 位址發文');
 			} else if ($author_name != '匿名, 交大') {
-				$db->updateSubmissionStatus($uid, -12);
-				err('目前尚未開放校外 IP 位址發文');
+				$posts = $db->getPostsByIp($ip_addr, 3);
+				if (count($posts) == 3) {
+					$last = strtotime($posts[2]['created_at']);
+					if (time() - $last < 12*60*60) {
+						$db->updateSubmissionStatus($uid, -12);
+						err('Please retry afetr 12 hours. 校外 IP 限制 12 小時內僅能發 2 篇文');
+					}
+				}
 			} else {
 				$posts = $db->getPostsByIp($ip_addr, 6);
 				if (count($posts) == 6) {

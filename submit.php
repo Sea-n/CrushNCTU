@@ -42,13 +42,18 @@ include('includes/head.php');
 			<div id="rule">
 				<h2>投稿規則</h2>
 				<ol>
-					<li>攻擊性投稿內容不能含有姓名、暱稱等可能洩漏對方身分的資料，請把關鍵字自行碼掉。
-						<ol><li>登入後具名投稿者，不受此條文之限制。</li></ol></li>
-					<li>含有歧視、人身攻擊、色情內容、不實訊息等文章，將由審核團隊衡量發文尺度。</li>
+					<li>如非<b>告白交大</b>內容請左轉&nbsp;<a href="https://x.nctu.app/">靠北交大 2.0</a>&nbsp;投稿</li>
+					<li>含有歧視、人身攻擊、色情內容等文章，將由審核團隊衡量發文尺度。</li>
 					<li>如果對文章感到不舒服，請來信審核團隊，如有合理理由將協助刪文。</li>
 				</ol>
 			</div>
 
+<?php if (strpos($ip_from, '境外') !== false) { ?>
+			<div class="ts negative message">
+				<div class="header">權限不足</div>
+				<p>目前尚未開放境外人士投稿。</p>
+			</div>
+<?php } else { ?>
 			<div id="submit-section">
 				<h2>立即投稿</h2>
 <?php if (isset($USER)) { ?>
@@ -96,6 +101,7 @@ include('includes/head.php');
 					</div>
 				</form>
 			</div>
+<?php } ?>
 
 			<div class="ts card" id="preview-section" style="margin-bottom: 42px; display: none;">
 				<div class="image">

@@ -43,7 +43,6 @@ include('includes/head.php');
 					<h5>例外狀況</h5>
 					<p>為避免非法文章意外通過，每天 02:00 - 08:00 門檻提升為 <button class="ts vote positive button">通過</button> 需比 <button class="ts vote negative button">駁回</button> 多 3 個</p>
 				</div>
-<!--
 				<h4>(C) 使用台灣 IP 位址</h4>
 				<p>熱門投稿會快速登上版面，審核者們也有足夠時間找出惡意投稿，滿足以下<b>任一條件</b>即發出</p>
 				<ul>
@@ -54,7 +53,8 @@ include('includes/head.php');
 						<li>6 小時以後：達到 3 個&nbsp;<button class="ts vote positive button">通過</button></li>
 					</ul></li>
 				</ul>
--->
+				<h4>(D) 境外 IP 位址</h4>
+				<p>尚未開放</p>
 			</div>
 			<div id="hide-box">
 				<big onclick="more();" style="cursor: pointer; color: black;">展開完整規則 <i class="dropdown icon"></i></big>

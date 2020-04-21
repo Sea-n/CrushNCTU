@@ -178,13 +178,7 @@ function checkEligible(array $post): bool {
 
 	/* Rule for Foreign IP address */
 	if (true) {
-		if ($dt < 59*60)
-			return false;
-
-		if ($vote < 10)
-			return false;
-
-		return true;
+		return false;
 	}
 }
 
