@@ -92,7 +92,7 @@ if (isset($post['deleted_at'])) {
 					<p itemprop="articleBody"><?= $body ?></p>
 				</div>
 				<div class="extra content">
-<?php if ($post['telegram_id'] > 10) { ?>
+<?php if ($post['telegram_id'] > 5) { ?>
 					<p><span><i class="telegram icon"></i> Telegram: <a target="_blank" href="https://t.me/s/CrushNCTU/<?= $post['telegram_id'] ?>">@CrushNCTU/<?= $post['telegram_id'] ?></a></span><br>
 <?php }
 if ($post['facebook_id'] > 10) { ?>
