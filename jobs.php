@@ -48,7 +48,7 @@ case 'vote':
 						[
 							'text' => '開啟審核頁面',
 							'login_url' => [
-								'url' => "https://x.nctu.app/login-tg?r=%2Freview%2F$uid"
+								'url' => "https://crush.nctu.app/login-tg?r=%2Freview%2F$uid"
 							]
 						]
 					]
@@ -79,7 +79,7 @@ case 'vote':
 		enHTML("$type $reason");
 
 	$TG->sendMsg([
-		'chat_id' => -1001489855993,
+		'chat_id' => -1001267456411,
 		'text' => $msg,
 		'parse_mode' => 'HTML',
 		'disable_web_page_preview' => true,

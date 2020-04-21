@@ -3,7 +3,7 @@
 	<head>
 <?php
 $TITLE = '常見問答';
-$IMG = 'https://x.nctu.app/assets/img/og.png';
+$IMG = 'https://crush.nctu.app/assets/img/og.png';
 include('includes/head.php');
 ?>
 	</head>
@@ -12,7 +12,7 @@ include('includes/head.php');
 		<header class="ts fluid vertically padded heading slate">
 			<div class="ts narrow container">
 				<h1 class="ts header">常見問答</h1>
-				<div class="description">靠北交大 2.0</div>
+				<div class="description">告白交大 2.0</div>
 			</div>
 		</header>
 		<div class="ts container" name="main">
@@ -52,7 +52,7 @@ include('includes/head.php');
 
 			<h2 class="ts header" id="apply-account">Q：怎麼註冊帳號</h2>
 			<p>如果您是交大的學生、老師、校友，請直接點擊右上角 Login 使用 NCTU OAuth 登入，不需另外註冊即可使用。</p>
-			<p>對於準交大生，靠北交大團隊特別提供帳號申請服務，不管您是百川、資工、電機特殊選才，還是碩班、博班正取生，只要憑相關證明私訊版主，即可幫您配發一個臨時帳號，正常使用此服務。</p>
+			<p>對於準交大生，告白交大團隊特別提供帳號申請服務，不管您是百川、資工、電機特殊選才，還是碩班、博班正取生，只要憑相關證明私訊版主，即可幫您配發一個臨時帳號，正常使用此服務。</p>
 			<p>但若您是友校學生、高三考生、其他親友，在這邊就只能跟您說聲抱歉了，目前不開放非交大使用者註冊，但您仍然可以正常投稿、瀏覽文章。</p>
 
 			<h2 class="ts header" id="ip-mask">Q：隱藏 IP 位址的機制是什麼</h2>

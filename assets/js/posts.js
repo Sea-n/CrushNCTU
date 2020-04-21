@@ -69,7 +69,7 @@ function appendPost(item) {
 	post.append(template.content.cloneNode(true));
 
 	post.id = 'post-' + item.id;
-	post.querySelector('#hashtag').innerText = '#靠交' + item.id;
+	post.querySelector('#hashtag').innerText = '#告白交大' + item.id;
 	post.querySelector('#hashtag').href = '/post/' + item.id;
 
 	if (item.has_img) {

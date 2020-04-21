@@ -162,23 +162,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		/* Check rate limit */
 		if (empty($author_id)) {
 			if (strpos($author_name, '境外') !== false) {
-				$posts = $db->getPostsByIp($ip_addr, 2);
-				if (count($posts) == 2) {
-					$last = strtotime($posts[1]['created_at']);
-					if (time() - $last < 24*60*60) {
-						$db->updateSubmissionStatus($uid, -12);
-						err('Please retry afetr 24 hours. 境外 IP 限制 24 小時內僅能發 1 篇文');
-					}
-				}
+				$db->updateSubmissionStatus($uid, -12);
+				err('目前尚未開放境外 IP 位址發文');
 			} else if ($author_name != '匿名, 交大') {
-				$posts = $db->getPostsByIp($ip_addr, 3);
-				if (count($posts) == 3) {
-					$last = strtotime($posts[2]['created_at']);
-					if (time() - $last < 6*60*60) {
-						$db->updateSubmissionStatus($uid, -12);
-						err('Please retry afetr 6 hours. 校外 IP 限制 6 小時內僅能發 2 篇文');
-					}
-				}
+				$db->updateSubmissionStatus($uid, -12);
+				err('目前尚未開放校外 IP 位址發文');
 			} else {
 				$posts = $db->getPostsByIp($ip_addr, 6);
 				if (count($posts) == 6) {

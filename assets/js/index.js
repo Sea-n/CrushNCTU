@@ -5,3 +5,5 @@ function more() {
 	content.style.height = '';
 	box.style.display = 'none';
 }
+
+window.onload = more;

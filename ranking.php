@@ -7,7 +7,7 @@ require_once('utils.php');
 require_once('database.php');
 $db = new MyDB();
 
-$CACHE = '/temp/xnctu-ranking.html';
+$CACHE = '/temp/cnctu-ranking.html';
 
 $TITLE = '排行榜';
 include('includes/head.php');
@@ -19,7 +19,7 @@ include('includes/head.php');
 			<div class="ts narrow container">
 
 				<h1 class="ts header">排行榜</h1>
-				<div class="description">靠北交大 2.0</div>
+				<div class="description">告白交大 2.0</div>
 			</div>
 		</header>
 		<div class="ts container" name="main">
@@ -44,7 +44,7 @@ include($CACHE);
 fastcgi_finish_request();
 
 /* Only update cache if expired */
-if (time() - filemtime($CACHE) < 30)
+if (time() - filemtime($CACHE) < 0)
 	exit;
 
 
@@ -99,7 +99,7 @@ usort($user_count, function($A, $B) {
 });
 $pt_max = $user_count[0]['pt'];
 
-$user_count = array_slice($user_count, 0, 50);
+$user_count = array_slice($user_count, 0, 20);
 
 foreach($user_count as $k => $v) {
 	$user = $db->getUserByNctu($v['id']);
@@ -238,7 +238,7 @@ function genData(string $id) {
 	}
 
 	$data['title'] = $name;
-	$begin = strtotime("2020-02-21 00:00");
+	$begin = strtotime("2020-04-21 00:00");
 	$end = strtotime("today 24:00");
 
 	for ($i=$begin; $i<=$end; $i+=$step) {

@@ -25,7 +25,7 @@ if (isset($USER) || $ip_from == '交大')
 	<head>
 <?php
 $TITLE = '文章投稿';
-$IMG = 'https://x.nctu.app/assets/img/og.png';
+$IMG = 'https://crush.nctu.app/assets/img/og.png';
 include('includes/head.php');
 ?>
 		<script src="/assets/js/submit.js"></script>
@@ -35,7 +35,7 @@ include('includes/head.php');
 		<header class="ts fluid vertically padded heading slate">
 			<div class="ts narrow container">
 				<h1 class="ts header">文章投稿</h1>
-				<div class="description">靠北交大 2.0</div>
+				<div class="description">告白交大 2.0</div>
 			</div>
 		</header>
 		<div class="ts container" name="main">
@@ -92,7 +92,7 @@ include('includes/head.php');
 					<input name="csrf_token" id="csrf_token" type="hidden" value="<?= $_SESSION['csrf_token'] ?>" />
 					<input id="submit" type="submit" class="ts disabled button" value="提交貼文" />
 					<div id="warning-preview" class="ts info compact segment" style="margin: -8px 0 -6px 12px; display: none;">
-						<p>Tips: 只有在網址單獨寫在最後一行時，靠交才會自動顯示頁面預覽</p>
+						<p>Tips: 只有在網址單獨寫在最後一行時，告白交大才會自動顯示頁面預覽</p>
 					</div>
 				</form>
 			</div>
