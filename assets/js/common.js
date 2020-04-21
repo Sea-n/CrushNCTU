@@ -111,6 +111,12 @@ function toHTML(str) {
 					a.href = word;
 					a.target = '_blank';
 					word = a.outerHTML;
+				} else if (/^#靠交\d+$/.test(word)) {
+					var a = document.createElement('a');
+					a.appendChild(document.createTextNode(word));
+					a.href = 'https://x.nctu.app/post/' + word.substr(3);
+					a.target = '_blank';
+					word = a.outerHTML;
 				} else if (/^#告白交大\d+$/.test(word)) {
 					var a = document.createElement('a');
 					a.appendChild(document.createTextNode(word));
