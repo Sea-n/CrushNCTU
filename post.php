@@ -10,7 +10,14 @@ if (!isset($_GET['id'])) {
 	exit('ID not found. 請輸入文章編號');
 }
 
-$post = $db->getPostById($_GET['id']);
+$id = $_GET['id'];
+
+if (!preg_match('/^\d+$/', $id)) {
+	http_response_code(404);
+	exit('Wrong post id format. 文章編號格式錯誤');
+}
+
+$post = $db->getPostById($id);
 if (!$post) {
 	http_response_code(404);
 	exit('Post not found. 文章不存在');
@@ -21,7 +28,7 @@ if (!$post) {
 <html lang="zh-TW">
 	<head>
 <?php
-$hashtag = "#告白交大{$post['id']}";
+$hashtag = "#告白交大{$id}";
 
 $DESC = $post['body'];
 $TITLE = "$hashtag $DESC";
@@ -54,9 +61,11 @@ $timeS = humanTime($post['created_at']);
 $timeP = humanTime($post['posted_at']);
 $tsS = strtotime($post['created_at']);
 
-$ip_masked = ip_mask($post['ip_addr']);
-
 $author_name = toHTML($post['author_name']);
+$ip_masked = ip_mask($post['ip_addr']);
+if (strpos($author_name, '境外') !== false)
+	$ip_masked = $post['ip_addr'];
+
 if (!empty($post['author_id'])) {
 	$author = $db->getUserByNctu($post['author_id']);
 	$author_name = toHTML($author['name']);

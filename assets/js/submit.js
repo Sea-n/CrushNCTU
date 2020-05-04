@@ -104,7 +104,7 @@ function formUpdate() {
 
 	bodyField.classList.remove('error', 'warning');
 	captchaField.classList.remove('error');
-	submit.classList.remove('disabled');
+	submit.classList.remove('disabled', 'negative', 'basic');
 
 	var body = bodyArea.value;
 	var len = body.length;
@@ -123,14 +123,21 @@ function formUpdate() {
 	}
 
 	preview.style.display = 'none';
-	submit.classList.remove('negative', 'basic');
 	if (body.includes('http')) {
 		var lines = body.split('\n');
-		var last = lines[lines.length - 1];
 
+		var last = lines[lines.length - 1];
 		if (!last.match(/^https?:\/\/[^\s]*$/)) {
-			preview.style.display = 'inline-block';
-			submit.classList.add('negative', 'basic');
+			preview.style.display = '';
+			submit.classList.add('negative');
+		}
+
+		/* Even if last line is URL, first line cannot be URL. */
+		var first = lines[0];
+		if (first.match(/https?:\/\//)) {
+			preview.style.display = '';
+			submit.classList.add('negative');
+			submit.classList.add('disabled');
 		}
 	}
 
@@ -151,11 +158,9 @@ function submitForm(e) {
 	var anon = document.getElementById('anon');
 	var csrf = document.getElementById('csrf_token');
 	var submit = document.getElementById('submit');
-	submitted = true;
 
 	if (!checkForm()) {
 		e.preventDefault();
-		submitted = false;
 
 		return;
 	}
@@ -192,8 +197,10 @@ function submitForm(e) {
 		var deadline = (new Date()).getTime() + 3*1000;
 		stopCountdown = setInterval(() => {
 			var dt = Math.floor((deadline - (new Date()).getTime()) / 1000);
-			if (dt <= 0) {
-				document.getElementById('countdown').innerText = '00:00';
+			if (dt < 0)
+				dt = 0;
+
+			if (dt == 0) {
 				document.getElementById('confirm-button').classList.remove('disabled');
 				clearInterval(stopCountdown);
 			}
@@ -218,7 +225,7 @@ function checkForm() {
 	formUpdate();  // For clean & update warnings
 
 	var len = bodyArea.value.length;
-	if (len < 10) {
+	if (len == 0) {
 		bodyField.classList.add('error');
 		isValid = false;
 	}
@@ -279,6 +286,7 @@ function confirmSubmission() {
 			return;
 		}
 		localStorage.setItem('draft', '');
+		submitted = true;
 		location.href = '/review/' + uid;
 	});
 }
@@ -311,6 +319,7 @@ function deleteSubmission() {
 	.then((resp) => {
 		console.log(resp);
 		alert(resp.msg);
+		submitted = true;
 	});
 }
 

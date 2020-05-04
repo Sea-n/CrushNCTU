@@ -111,9 +111,6 @@ function ip_mask(string $ip_addr): string {
 		if (preg_match('/^140\.113\.0\.229$/', $ip_addr))
 			return $ip_addr;  // NCTU VPN
 
-		if (preg_match('/^140\.113\.[567]\.\d+$/', $ip_addr))
-			return $ip_addr;  // NTHU WLAN
-
 		$ip4 = explode('.', $ip_addr);
 		$ip4[2] = '***';
 		$ip4[3] = '*' . substr('0'.($ip4[3]%100), -2);
@@ -218,6 +215,7 @@ function idToDep(string $id): string {
 	/* Teachers */
 	if ($id == 'X9616') return '技術發展組';  # 王英鼎
 	if ($id == 'E9604') return '資工系';  # 張巧涵
+	if ($id == 'T0818') return '電子所';  # 林柏宏
 
 	if (!preg_match('#^\d{7}$#', $id))
 		return "非學生 $id";

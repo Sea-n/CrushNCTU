@@ -9,6 +9,12 @@ if (isset($_SESSION['nctu_id']) && !isset($USER))
 
 if (isset($_GET['uid'])) {
 	$uid = $_GET['uid'];
+
+	if (!preg_match('/^[a-zA-Z0-9]{4}$/', $uid)) {
+		http_response_code(404);
+		exit('Wrong uid format. 投稿編號格式錯誤');
+	}
+
 	if (!($post = $db->getPostByUid($uid))) {
 		http_response_code(404);
 		exit('Post not found. 文章不存在');
@@ -110,6 +116,9 @@ foreach ($posts as $post) {
 	$uid = $post['uid'];
 	$ip_masked = ip_mask($post['ip_addr']);
 	$author_name = toHTML($post['author_name']);
+
+	if (strpos($author_name, '境外') !== false)
+		$ip_masked = $post['ip_addr'];
 
 	$author_photo = $post['author_photo'] ?? '';
 	if (empty($author_photo))

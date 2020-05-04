@@ -26,17 +26,9 @@ function more() {
 		return;
 	button.classList.add('disabled');
 
-	var limit = 20;
-	if (offset >= 100)
-		limit = 50;
-	if (offset >= 300)
-		limit = 100;
-	if (offset >= 800)
-		limit = 200;
-	if (offset >= 2000)
-		limit = 500;
-	if (offset >= 5000)
-		limit = 1000;
+	var limit = 50;
+	if (offset >= 200)
+		limit = offset;
 
 	button.dataset.offset = offset + limit;
 	getPosts(limit, offset);
@@ -63,6 +55,7 @@ function getPosts(limit, offset) {
 }
 
 function appendPost(item) {
+	var read_more = false;
 	var posts = document.getElementById('posts');
 	var template = document.getElementById('post-template');
 	var post = document.createElement('div');
@@ -77,7 +70,17 @@ function appendPost(item) {
 		post.querySelector('#img').src = '/img/' + item.uid + '.jpg';
 	}
 
-	post.querySelector('#body').innerHTML = toHTML(item.body);
+	body = item.body;
+	block = body.split('\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n');
+	if (block.length > 1) {
+		body = block[0];
+		read_more = true;
+	}
+
+	post.querySelector('#body').innerHTML = toHTML(body);
+
+	if (read_more)
+		post.querySelector('#body').innerHTML += '<p>.<br>.<br>.<br>.<br>.<br>. . . . . <a href="/post/' + item.id + '">閱讀全文</a></p>';
 
 	post.querySelector('#author-name').innerText = item.author_name;
 	post.querySelector('#author-photo').src = item.author_photo;

@@ -22,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 		$offset = (int) ($_GET['offset'] ?? 0);
 		$limit = (int) ($_GET['limit'] ?? 0);
 		if ($limit < 1)
-			$limit = 20;
-		if ($limit > 1000)
-			$limit = 1000;
+			$limit = 50;
+		if ($limit > 5000)
+			$limit = 5000;
 
 		$posts = $db->getPosts($limit, $offset);
 		$result = [];
@@ -39,9 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 				else
 					$author_photo = genPic($post['author_id']);
 			} else {
-				$ip_masked = ip_mask($post['ip_addr']);
-
 				$author_name = $post['author_name'];
+				$ip_masked = ip_mask($post['ip_addr']);
+				if (strpos($author_name, '境外') !== false)
+					$ip_masked = $post['ip_addr'];
+
 				$author_photo = genPic($ip_masked);
 
 				if (!isset($_SESSION['nctu_id']))
@@ -111,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 	if ($ACTION == 'submission') {
 		/* Prepare post content */
-		$body = $_POST['body'] ?? 'X';
+		$body = $_POST['body'] ?? '';
 		$body = str_replace("\r", "", $body);
 		$body = preg_replace("#\n\s+\n#", "\n\n", $body);
 		$body = trim($body);
@@ -165,8 +167,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				$db->updateSubmissionStatus($uid, -12);
 				err('目前尚未開放境外 IP 位址發文');
 			} else if ($author_name != '匿名, 交大') {
-				$posts = $db->getPostsByIp($ip_addr, 3);
-				if (count($posts) == 3) {
+				$posts = $db->getPostsByIp($ip_addr, 6);
+				if (count($posts) == 6) {
 					$last = strtotime($posts[2]['created_at']);
 					if (time() - $last < 12*60*60) {
 						$db->updateSubmissionStatus($uid, -12);
@@ -198,6 +200,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		/* Success, return post data */
 		$ip_masked = ip_mask($ip_addr);
+		if (strpos($author_name, '境外') !== false)
+			$ip_masked = $ip_addr;
 		if (empty($author_photo))
 			$author_photo = genPic($ip_masked);
 
@@ -226,7 +230,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		$reason = $_POST['reason'] ?? '';
 		$reason = trim($reason);
-		if (mb_strlen($reason) < 1)
+		if (empty($reason))
 			err('附註請勿留空');
 		if (mb_strlen($reason) > 100)
 			err('附註請輸入 100 個字以內');
@@ -300,7 +304,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
 
 		$reason = $_POST['reason'] ?? '';
 		$reason = trim($reason);
-		if (mb_strlen($reason) < 1)
+		if (empty($reason))
 			err('附註請勿留空');
 		if (mb_strlen($reason) > 100)
 			err('附註請輸入 100 個字以內');
@@ -346,14 +350,18 @@ function checkSubmitData(string $body, bool $has_img): string {
 	}
 
 	/* Check Body */
-	if (mb_strlen($body) < 5)
-		return 'Body too short. 文章過短';
+	if (empty($body))
+		return 'Body is empty. 請輸入文章內容';
 
 	if ($has_img && mb_strlen($body) > 1000)
 		return 'Body too long (' . mb_strlen($body) . ' chars). 文章過長';
 
 	if (mb_strlen($body) > 4000)
 		return 'Body too long (' . mb_strlen($body) . ' chars). 文章過長';
+
+	$lines = explode("\n", $body);
+	if (preg_match('#https?://#', $lines[0]))
+		return 'First line cannot be URL. 第一行不能為網址';
 
 	return '';
 }
@@ -393,8 +401,40 @@ function uploadImage(string $uid): string {
 	if ($width < $height/4)
 		return 'Image must be at least 1:4.';
 
+	/* Fix orientation */
+	$orien = shell_exec("exiftool -Orientation -S -n $dst |cut -c14- |tr -d '\\n'");
+	switch ($orien) {
+	case '1':  # Horizontal (normal)
+		$transpose = "";
+		break;
+	case '2':  # Mirror horizontal
+		$transpose = "-vf transpose=0,transpose=1";
+		break;
+	case '3':  # Rotate 180
+		$transpose = "-vf transpose=1,transpose=1";
+		break;
+	case '4':  # Mirror vertical
+		$transpose = "-vf transpose=3,transpose=1";
+		break;
+	case '5':  # Mirror horizontal and rotate 270 CW
+		$transpose = "-vf transpose=0";
+		break;
+	case '6':  # Rotate 90 CW
+		$transpose = "-vf transpose=1";
+		break;
+	case '7':  # Mirror horizontal and rotate 90 CW
+		$transpose = "-vf transpose=3";
+		break;
+	case '8':  # Rotate 270 CW
+		$transpose = "-vf transpose=2";
+		break;
+	default:
+		$transpose = "";
+		break;
+	}
+
 	/* Convert all file type to jpg */
-	system("ffmpeg -i $dst $dst.jpg");
+	shell_exec("ffmpeg -i $dst $transpose $dst.jpg 2>&1");
 	unlink($dst);
 
 	return '';

@@ -3,24 +3,24 @@ require(__DIR__.'/../utils.php');
 require(__DIR__.'/../database.php');
 $db = new MyDB();
 
-if ($TG->ChatID < 0) {
-	if ($TG->ChatID == -1001267456411)
-		exit;  // Crush NCTU Votes group
+$text = $TG->data['message']['text'] ?? '';
 
-	$TG->sendMsg([
-		'text' => '目前尚未支援群組功能',
-		'reply_markup' => [
-			'inline_keyboard' => [
-				[
+if ($TG->ChatID < 0) {
+	if ($TG->ChatID != -1001267456411)
+		$TG->sendMsg([
+			'text' => '目前尚未支援群組功能',
+			'reply_markup' => [
+				'inline_keyboard' => [
 					[
 						'text' => '📢 告白交大 2.0 頻道',
 						'url' => 'https://t.me/CrushNCTU'
 					]
 				]
 			]
-		]
-	]);
-	exit;
+		]);
+
+	if (substr($text, 0, 1) != '/')
+		exit;
 }
 
 $USER = $db->getUserByTg($TG->FromID);
@@ -47,8 +47,6 @@ if (!$USER) {
 	]);
 	exit;
 }
-
-$text = $TG->data['message']['text'] ?? '';
 
 if (substr($text, 0, 1) == '/') {
 	$text = substr($text, 1);
@@ -147,6 +145,38 @@ if (substr($text, 0, 1) == '/') {
 						]
 					]
 				]
+			]);
+			break;
+
+		case 'update':
+			if ($TG->FromID != 109780439) {
+				$TG->sendMsg([
+					'text' => "此功能僅限管理員使用",
+				]);
+				exit;
+			}
+
+			[$column, $body] = explode(' ', $arg, 2);
+
+			if ($column != "body") {
+				$TG->sendMsg([
+					'text' => "Column '$column' unsupported."
+				]);
+				exit;
+			}
+
+			if (!preg_match('/^#投稿(\w{4})/um', $TG->data['message']['reply_to_message']['text'] ?? '', $matches)) {
+				$TG->sendMsg([
+					'text' => 'Please reply to submission message.'
+				]);
+				exit;
+			}
+			$uid = $matches[1];
+
+			$db->updatePostBody($uid, $body);
+
+			$TG->sendMsg([
+				'text' => "Done.\n"
 			]);
 			break;
 
