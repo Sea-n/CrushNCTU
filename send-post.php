@@ -54,7 +54,7 @@ $img = $post['has_img'] ? $uid : '';
 
 $time = strtotime($post['created_at']);
 $time = date("Y 年 m 月 d 日 H:i", $time);
-$link = "https://crush.nctu.app/post/$id";
+$link = "https://$DOMAIN/post/$id";
 
 /* Send post to every SNS */
 $sns = [
@@ -207,7 +207,7 @@ function send_telegram(int $id, string $body, string $img = ''): int {
 	else
 		$result = $TG->sendPhoto([
 			'chat_id' => '@CrushNCTU',
-			'photo' => "https://crush.nctu.app/img/{$img}.jpg",
+			'photo' => "https://$DOMAIN/img/{$img}.jpg",
 			'caption' => $msg,
 			'parse_mode' => 'HTML',
 		]);
@@ -235,7 +235,7 @@ function send_facebook(int $id, string $body, string $img = ''): int {
 		if (filter_var($end, FILTER_VALIDATE_URL) && strpos($end, 'facebook') === false)
 			$data['link'] = $end;
 	} else {
-		$data['url'] = "https://crush.nctu.app/img/$img.jpg";
+		$data['url'] = "https://$DOMAIN/img/$img.jpg";
 		$data['caption'] = $msg;
 	}
 
